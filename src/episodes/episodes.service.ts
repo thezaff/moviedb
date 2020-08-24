@@ -1,5 +1,14 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import { scan, map, switchMap } from 'rxjs/operators';
+import {
+  scan,
+  map,
+  tap,
+  flatMap,
+  switchMap,
+  toArray,
+  combineAll,
+  mergeMap,
+} from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
 const key = 'dd1b0143dd84aea4692c8b3f0045b050';
@@ -14,14 +23,13 @@ export class EpisodesService {
     const getSeason = seasonNumber =>
       this._httpService
         .get(`${url}/${id}/season/${seasonNumber}?api_key=${key}&${lang}`)
-        .pipe(map(i => i.data));
+        .pipe(map(season => season.data.episodes));
 
-    return this._httpService
-      .get(`${url}/${id}?api_key=${key}&${lang}`)
-      .pipe(
-        switchMap(({ data }) =>
-          forkJoin(data.seasons.map((season, idx) => getSeason(idx))),
-        ),
-      );
+    return this._httpService.get(`${url}/${id}?api_key=${key}&${lang}`).pipe(
+      switchMap(({ data }) =>
+        forkJoin(data.seasons.map((season, idx) => getSeason(idx))),
+      ),
+      mergeMap(data => data),
+    );
   }
 }
