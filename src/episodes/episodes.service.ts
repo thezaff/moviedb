@@ -1,14 +1,5 @@
 import { Injectable, HttpService } from '@nestjs/common';
-import {
-  scan,
-  map,
-  tap,
-  flatMap,
-  switchMap,
-  toArray,
-  combineAll,
-  mergeMap,
-} from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
 const key = 'dd1b0143dd84aea4692c8b3f0045b050';
@@ -20,16 +11,28 @@ export class EpisodesService {
   constructor(private _httpService: HttpService) {}
 
   getTopEpisodes(id: number): any {
-    const getSeason = seasonNumber =>
+    const getSeason = (seasonNumber: number) =>
       this._httpService
         .get(`${url}/${id}/season/${seasonNumber}?api_key=${key}&${lang}`)
-        .pipe(map(season => season.data.episodes));
+        .pipe(
+          map(season =>
+            season.data.episodes.map(ep => ({
+              episodeName: ep.name,
+              averageVotes: ep.vote_average,
+            })),
+          ),
+        );
 
     return this._httpService.get(`${url}/${id}?api_key=${key}&${lang}`).pipe(
-      switchMap(({ data }) =>
-        forkJoin(data.seasons.map((season, idx) => getSeason(idx))),
+      switchMap(({ data }) => {
+        return forkJoin(data.seasons.map((season, idx) => getSeason(idx)));
+      }),
+      map(data =>
+        []
+          .concat(...data)
+          .sort((a, b) => b.averageVotes - a.averageVotes)
+          .slice(0, 20),
       ),
-      mergeMap(data => data),
     );
   }
 }
