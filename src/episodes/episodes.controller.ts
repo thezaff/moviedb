@@ -10,3 +10,9 @@ export class EpisodesController {
     return this._episodesService.getTopEpisodes(params.id);
   }
 }
+
+/* 
+  TODO:
+  1. Decorator over Episodes controller, to log accessed series using analytics service
+  2. Define filesystem volume for Redis
+*/
