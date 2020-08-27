@@ -1,6 +1,8 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
+import { CacheInterceptor, UseInterceptors } from '@nestjs/common';
 
+@UseInterceptors(CacheInterceptor)
 @Controller('api')
 export class EpisodesController {
   constructor(private readonly _episodesService: EpisodesService) {}
