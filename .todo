@@ -1,2 +1,14 @@
 TODO:
-  1. REDIS
+  1. Get Top Episodes for Show
+    1.1. Return [ { episodeName: String, averageVotes: Number }, { ... }, ... ]
+    1.2. On each `Get Show` write to storage: `{ showName: String, accessCount: Number }`
+
+  2. Get Top Accessed Shows
+    2.1. Return top 5 documents by `accessCount`
+
+
+
+FINAL TODO:
+  1. Пишем в монго базу при каждом запросе и кэшируем
+  2. Кэш аналитики - AOF
+  3. Кэш топ эпизодов - обычный RDB

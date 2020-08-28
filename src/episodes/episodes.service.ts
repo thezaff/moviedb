@@ -1,4 +1,4 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { Injectable, HttpService, CacheModule } from '@nestjs/common';
 import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 
@@ -8,9 +8,14 @@ const lang = 'language=en-US';
 
 @Injectable()
 export class EpisodesService {
-  constructor(private _httpService: HttpService) {}
+  constructor(
+    private _httpService: HttpService,
+    private _redisCache: CacheModule,
+  ) {}
 
   getTopEpisodes(id: number): any {
+    // const redisClient = this._redisCache.store.getClient()
+
     const getSeason = (seasonNumber: number) =>
       this._httpService
         .get(`${url}/${id}/season/${seasonNumber}?api_key=${key}&${lang}`)

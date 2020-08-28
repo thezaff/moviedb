@@ -10,7 +10,7 @@ import { EpisodesController } from './episodes.controller';
       store: redisStore,
       host: 'redis',
       port: 6379,
-      ttl: 6000,
+      ttl: 600,
     }),
   ],
   providers: [EpisodesService],

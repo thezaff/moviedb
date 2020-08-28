@@ -24,10 +24,21 @@ services:
   redis:
     container_name: redis
     image: redis:6
-    # volumes:
-    #   - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - webnet
+  mongo:
+    container_name: mongo
+    image: mongo:4.4
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:
 
 networks:
   webnet:
