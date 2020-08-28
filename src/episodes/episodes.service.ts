@@ -3,6 +3,7 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { AnalyticsService } from 'src/analytics/analytics.service';
 
+// TODO: Move key to an .env file
 const key = 'dd1b0143dd84aea4692c8b3f0045b050';
 const url = 'https://api.themoviedb.org/3/tv';
 const lang = 'language=en-US';

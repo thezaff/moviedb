@@ -1,15 +1,14 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { CacheInterceptor, UseInterceptors } from '@nestjs/common';
-import { AnalyticsService } from 'src/analytics/analytics.service';
 
+/** TODO: Uncomment cache interceptor,
+ * once AnalyticsService.updateSeriesAccessCount added as side-effect before `get` response
+ **/
 // @UseInterceptors(CacheInterceptor)
 @Controller('topEpisodes')
 export class EpisodesController {
-  constructor(
-    private readonly _episodesService: EpisodesService,
-    private readonly _analyticsService: AnalyticsService,
-  ) {}
+  constructor(private readonly _episodesService: EpisodesService) {}
 
   @Get('/:id')
   async getTopEpisodes(@Param() params: { id: number }) {
