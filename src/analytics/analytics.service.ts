@@ -9,11 +9,30 @@ export class AnalyticsService {
     @InjectModel(Analytics.name) private _analyticsModel: Model<Analytics>,
   ) {}
 
-  getPopularSeries(): Promise<Analytics[]> {
-    return this._analyticsModel.find().exec();
+  getPopularSeries(): Promise<any[]> {
+    return this._analyticsModel
+      .find({})
+      .sort({ accessCount: -1 })
+      .limit(5)
+      .exec()
+      .then(data =>
+        data.map(i => ({
+          seriesName: i.seriesName,
+          accessCount: i.accessCount,
+        })),
+      );
   }
 
-  updateSeriesAccessCount(): Promise<Analytics[]> {
-    return this._analyticsModel.find({}).exec();
+  async updateSeriesAccessCount(
+    seriesId: number,
+    seriesName: string,
+  ): Promise<Analytics> {
+    const filter = { _id: seriesId };
+    const update = { seriesName, $inc: { accessCount: 1 } };
+
+    return this._analyticsModel.findOneAndUpdate(filter, update, {
+      new: true,
+      upsert: true,
+    });
   }
 }

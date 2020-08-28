@@ -1,20 +1,18 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { CacheInterceptor, UseInterceptors } from '@nestjs/common';
+import { AnalyticsService } from 'src/analytics/analytics.service';
 
-@UseInterceptors(CacheInterceptor)
-@Controller('api')
+// @UseInterceptors(CacheInterceptor)
+@Controller('topEpisodes')
 export class EpisodesController {
-  constructor(private readonly _episodesService: EpisodesService) {}
+  constructor(
+    private readonly _episodesService: EpisodesService,
+    private readonly _analyticsService: AnalyticsService,
+  ) {}
 
-  @Get('/episodes/:id')
-  getTopEpisodes(@Param() params: { id: number }): any {
+  @Get('/:id')
+  async getTopEpisodes(@Param() params: { id: number }) {
     return this._episodesService.getTopEpisodes(params.id);
   }
 }
-
-/* 
-  TODO:
-  1. Decorator over Episodes controller, to log accessed series using analytics service
-  2. Define filesystem volume for Redis
-*/

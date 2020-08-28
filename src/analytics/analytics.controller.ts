@@ -5,7 +5,7 @@ import { AnalyticsService } from './analytics.service';
 export class AnalyticsController {
   constructor(private readonly _analyticsService: AnalyticsService) {}
 
-  @Get('/top')
+  @Get('/popularSeries')
   getPopularSeries(): any {
     return this._analyticsService.getPopularSeries();
   }
