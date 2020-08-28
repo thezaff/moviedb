@@ -9,7 +9,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [
     EpisodesModule,
     AnalyticsModule,
-    MongooseModule.forRoot('mongodb://localhost/moviedb'),
+    MongooseModule.forRoot('mongodb://mongo:27017/moviedb'),
   ],
   controllers: [AppController],
   providers: [AppService],

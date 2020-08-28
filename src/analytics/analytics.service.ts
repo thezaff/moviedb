@@ -1,11 +1,19 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { map } from 'rxjs/operators';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Analytics } from './analytics.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class AnalyticsService {
-  constructor(private _httpService: HttpService) {}
+  constructor(
+    @InjectModel(Analytics.name) private _analyticsModel: Model<Analytics>,
+  ) {}
 
-  getPopularSeries(): any {
-    return 'analytics';
+  getPopularSeries(): Promise<Analytics[]> {
+    return this._analyticsModel.find().exec();
+  }
+
+  updateSeriesAccessCount(): Promise<Analytics[]> {
+    return this._analyticsModel.find({}).exec();
   }
 }

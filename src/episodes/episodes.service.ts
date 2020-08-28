@@ -8,14 +8,9 @@ const lang = 'language=en-US';
 
 @Injectable()
 export class EpisodesService {
-  constructor(
-    private _httpService: HttpService,
-    private _redisCache: CacheModule,
-  ) {}
+  constructor(private _httpService: HttpService) {}
 
   getTopEpisodes(id: number): any {
-    // const redisClient = this._redisCache.store.getClient()
-
     const getSeason = (seasonNumber: number) =>
       this._httpService
         .get(`${url}/${id}/season/${seasonNumber}?api_key=${key}&${lang}`)

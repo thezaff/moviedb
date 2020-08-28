@@ -21,6 +21,9 @@ services:
       - webnet
     depends_on:
       - redis
+      - mongo
+    links:
+      - mongo
   redis:
     container_name: redis
     image: redis:6
@@ -36,6 +39,8 @@ services:
       - 27017:27017
     volumes:
       - mongo:/data/db
+    networks:
+      - webnet
 
 volumes:
   mongo:
