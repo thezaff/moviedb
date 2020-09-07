@@ -1,20 +1,26 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
-// TODO: Move key to an .env file
-const key = 'dd1b0143dd84aea4692c8b3f0045b050';
-const url = 'https://api.themoviedb.org/3/tv';
 const lang = 'language=en-US';
 
 @Injectable()
 export class EpisodesService {
-  constructor(private _httpService: HttpService) {}
+  constructor(
+    private _httpService: HttpService,
+    private _configService: ConfigService,
+  ) {}
 
   getTopEpisodes(id: number): any {
+    const API_KEY = this._configService.get<string>('TMDB_API_KEY');
+    const API_URL = this._configService.get<string>('TMDB_API_URL');
+
     const getSeason = (seasonNumber: number) =>
       this._httpService
-        .get(`${url}/${id}/season/${seasonNumber}?api_key=${key}&${lang}`)
+        .get(
+          `${API_URL}/${id}/season/${seasonNumber}?api_key=${API_KEY}&${lang}`,
+        )
         .pipe(
           map(season =>
             season.data.episodes.map(ep => ({
@@ -25,7 +31,7 @@ export class EpisodesService {
         );
 
     const getSeries = () =>
-      this._httpService.get(`${url}/${id}?api_key=${key}&${lang}`);
+      this._httpService.get(`${API_URL}/${id}?api_key=${API_KEY}&${lang}`);
 
     const getEpisodes = data => {
       const seriesName = data.name;
