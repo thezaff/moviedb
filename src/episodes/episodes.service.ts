@@ -33,7 +33,9 @@ export class EpisodesService {
         this._analyticsService.updateSeriesAccessCount(id, data.name),
       ),
       switchMap(({ data }) => {
-        return forkJoin(data.seasons.map((season, idx) => getSeason(idx)));
+        return forkJoin(
+          data.seasons.map(season => getSeason(season.season_number)),
+        );
       }),
       map(data =>
         []
