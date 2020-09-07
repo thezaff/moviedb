@@ -1,7 +1,6 @@
-import { Injectable, HttpService, CacheModule, Inject } from '@nestjs/common';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { Injectable, HttpService } from '@nestjs/common';
+import { map, switchMap } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
-import { AnalyticsService } from 'src/analytics/analytics.service';
 
 // TODO: Move key to an .env file
 const key = 'dd1b0143dd84aea4692c8b3f0045b050';
@@ -10,10 +9,7 @@ const lang = 'language=en-US';
 
 @Injectable()
 export class EpisodesService {
-  constructor(
-    private _httpService: HttpService,
-    private readonly _analyticsService: AnalyticsService,
-  ) {}
+  constructor(private _httpService: HttpService) {}
 
   getTopEpisodes(id: number): any {
     const getSeason = (seasonNumber: number) =>
@@ -28,21 +24,25 @@ export class EpisodesService {
           ),
         );
 
-    return this._httpService.get(`${url}/${id}?api_key=${key}&${lang}`).pipe(
-      tap(({ data }) =>
-        this._analyticsService.updateSeriesAccessCount(id, data.name),
-      ),
-      switchMap(({ data }) => {
-        return forkJoin(
-          data.seasons.map(season => getSeason(season.season_number)),
-        );
-      }),
-      map(data =>
-        []
-          .concat(...data)
-          .sort((a, b) => b.averageVotes - a.averageVotes)
-          .slice(0, 20),
-      ),
-    );
+    const getSeries = () =>
+      this._httpService.get(`${url}/${id}?api_key=${key}&${lang}`);
+
+    const getEpisodes = data => {
+      const seriesName = data.name;
+
+      return forkJoin(
+        data.seasons.map(season => getSeason(season.season_number)),
+      ).pipe(
+        map(data => ({
+          seriesName: seriesName,
+          topEpisodes: []
+            .concat(...data)
+            .sort((a, b) => b.averageVotes - a.averageVotes)
+            .slice(0, 20),
+        })),
+      );
+    };
+
+    return getSeries().pipe(switchMap(({ data }) => getEpisodes(data)));
   }
 }
