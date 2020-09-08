@@ -1,6 +1,6 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { map, switchMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { Injectable, HttpService, HttpException } from '@nestjs/common';
+import { map, switchMap, catchError } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 
 const lang = 'language=en-US';
@@ -49,6 +49,11 @@ export class EpisodesService {
       );
     };
 
-    return getSeries().pipe(switchMap(({ data }) => getEpisodes(data)));
+    return getSeries().pipe(
+      switchMap(({ data }) => getEpisodes(data)),
+      catchError(err => {
+        throw new HttpException(err.response.statusText, err.response.status);
+      }),
+    );
   }
 }

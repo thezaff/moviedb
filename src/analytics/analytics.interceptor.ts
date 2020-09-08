@@ -14,7 +14,6 @@ export class AnalyticsInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const [req] = context.getArgs();
-    console.log('AnalyticsInterceptor -> constructor -> req', req.params.id);
 
     return next
       .handle()
