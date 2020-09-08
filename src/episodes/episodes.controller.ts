@@ -1,15 +1,18 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { EpisodesService } from './episodes.service';
 import { CacheInterceptor, UseInterceptors } from '@nestjs/common';
 import { AnalyticsInterceptor } from '../analytics/analytics.interceptor';
+import { TopEpisodesResponseDTO } from './episodes.dto';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('topEpisodes')
 export class EpisodesController {
   constructor(private readonly _episodesService: EpisodesService) {}
 
+  @ApiOkResponse({ type: TopEpisodesResponseDTO })
   @UseInterceptors(AnalyticsInterceptor, CacheInterceptor)
   @Get('/:id')
-  async getTopEpisodes(@Param() params: { id: number }) {
-    return this._episodesService.getTopEpisodes(params.id);
+  getTopEpisodes(@Param('id') id: number): Promise<TopEpisodesResponseDTO> {
+    return this._episodesService.getTopEpisodes(id);
   }
 }
