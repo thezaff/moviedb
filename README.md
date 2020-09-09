@@ -12,7 +12,7 @@ $ docker-compose up
 
 You can see API reference (Swagger) on [localhost:3000](http://localhost:3000/).
 
-## Rebuild with updated mounts:
+## Rebuild with updated volumes:
 
 ```bash
 $ docker-compose up --build -V
