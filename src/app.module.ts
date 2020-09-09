@@ -2,12 +2,19 @@ import { Module } from '@nestjs/common';
 import { EpisodesModule } from './episodes/episodes.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 @Module({
   imports: [
     EpisodesModule,
     AnalyticsModule,
-    MongooseModule.forRoot('mongodb://mongo:27017/moviedb'),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (_configService: ConfigService) => ({
+        uri: _configService.get<string>('MONGO_URL'),
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot(),
   ],
 })

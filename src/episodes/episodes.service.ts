@@ -1,6 +1,6 @@
 import { Injectable, HttpService, HttpException } from '@nestjs/common';
 import { map, switchMap, catchError } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 
 const lang = 'language=en-US';

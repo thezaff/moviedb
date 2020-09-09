@@ -15,4 +15,9 @@ export class EpisodesController {
   getTopEpisodes(@Param('id') id: number): Promise<TopEpisodesResponseDTO> {
     return this._episodesService.getTopEpisodes(id);
   }
+
+  // @Get('/:id')
+  // getTopEpisodes(@Param('id') id: number): number {
+  //   return id;
+  // }
 }

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { AnalyticsService } from 'src/analytics/analytics.service';
+import { AnalyticsService } from './analytics.service';
 
 @Injectable()
 export class AnalyticsInterceptor implements NestInterceptor {
